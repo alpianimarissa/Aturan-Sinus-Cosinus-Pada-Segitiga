@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif & Latihan Mandiri: Aturan Sinus & Cosinus</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- KaTeX for beautiful math equations -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="triggerMathRender()"></script>
+    
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-600 text-white p-2 rounded-lg">
+                        <i class="fa-solid fa-graduation-cap text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900 leading-tight">Portal Kuis Interaktif</h1>
+                        <p class="text-xs text-emerald-600 font-medium tracking-wider uppercase">Aturan Sinus & Cosinus</p>
+                    </div>
+                </div>
+                <div class="text-xs text-slate-500 font-medium bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex-grow w-full flex flex-col space-y-6">
+        
+        <!-- Jumbotron / Welcome Area -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-2 max-w-xl">
+                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Koleksi Soal Eksklusif</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Evaluasi & Asah Kemampuan Trigonometri</h2>
+                <p class="text-slate-500 text-sm leading-relaxed">
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 shrink-0">
+                <button onclick="selectMode('practice')" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold px-5 py-3 rounded-xl transition flex items-center justify-center space-x-2 shadow-sm text-sm">
+                    <i class="fa-solid fa-book-open text-emerald-600"></i>
+                    <span>Mode Latihan Santai</span>
+                </button>
+                <button onclick="selectMode('quiz')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-xl transition flex items-center justify-center space-x-2 shadow-sm text-sm">
+                    <i class="fa-solid fa-stopwatch"></i>
+                    <span>Mode Kuis Berwaktu</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mode Workspace Container -->
+        <div id="workspace-practice" class="hidden space-y-6">
+            <!-- Practice Mode Header -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-indigo-100 text-indigo-700 p-2 rounded-lg"><i class="fa-solid fa-book-open"></i></span>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm">Mode Latihan Santai</h3>
+                        <p class="text-xs text-slate-400">Jawab soal, lihat petunjuk kognitif, dan dapatkan pembahasan instan langsung setelah memilih.</p>
+                    </div>
+                </div>
+                <!-- Dropdown selector of questions -->
+                <select id="practice-select-q" onchange="loadPracticeQuestion()" class="bg-slate-100 border border-slate-200 text-xs font-bold rounded-lg p-2 focus:outline-none">
+                    <!-- Options injected dynamically -->
+                </select>
+            </div>
+
+            <!-- Question Card -->
+            <div id="practice-card" class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                <!-- Question text -->
+                <div class="space-y-2">
+                    <span id="practice-q-label" class="bg-slate-100 text-slate-600 text-xs font-bold px-2.5 py-1 rounded-full">Soal 1</span>
+                    <h4 id="practice-q-text" class="text-slate-900 font-bold text-base md:text-lg leading-relaxed pt-2">Loading...</h4>
+                </div>
+
+                <!-- Multiple choice options grid -->
+                <div id="practice-options" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                    <!-- Injected dynamically -->
+                </div>
+
+                <!-- Footer with Hints & Explanations -->
+                <div class="border-t border-slate-100 pt-6 flex flex-col space-y-4">
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="togglePracticeHint()" class="bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold px-4 py-2 rounded-xl transition border border-amber-200 flex items-center space-x-1">
+                            <i class="fa-regular fa-lightbulb"></i>
+                            <span>Tampilkan Petunjuk</span>
+                        </button>
+                        <button id="practice-next-btn" onclick="nextPractice()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center space-x-1">
+                            <span>Soal Berikutnya</span>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Dynamic Hint Box -->
+                    <div id="practice-hint-box" class="hidden p-4 rounded-xl bg-amber-50 border border-amber-100 text-amber-900 text-xs leading-relaxed">
+                        <!-- Hint text dynamic -->
+                    </div>
+
+                    <!-- Dynamic Explanation Box -->
+                    <div id="practice-explain-box" class="hidden p-5 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-950 text-sm leading-relaxed space-y-3">
+                        <!-- Explanation text dynamic -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="workspace-quiz" class="hidden space-y-6">
+            <!-- Quiz Mode Header -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-red-100 text-red-700 p-2 rounded-lg"><i class="fa-solid fa-stopwatch"></i></span>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm">Mode Kuis Berwaktu</h3>
+                        <p class="text-xs text-slate-400">Kerjakan seluruh soal dengan fokus. Analisis kesalahan didapatkan setelah mengumpulkan lembar jawaban.</p>
+                    </div>
+                </div>
+                <!-- Time & Progress info -->
+                <div class="text-right space-y-1">
+                    <div class="text-xs text-slate-400 font-bold uppercase tracking-wider">Sisa Waktu</div>
+                    <div id="quiz-timer-display" class="font-mono text-base font-black text-red-600 bg-red-50 px-3 py-1 rounded-lg border border-red-100">20:00</div>
+                </div>
+            </div>
+
+            <!-- Quiz Setup Panel -->
+            <div id="quiz-setup-panel" class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm text-center max-w-md mx-auto space-y-6">
+                <span class="bg-red-50 text-red-600 w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto border border-red-100">
+                    <i class="fa-solid fa-play"></i>
+                </span>
+                <h3 class="text-xl font-bold text-slate-900">Siap untuk Memulai Ujian?</h3>
+                <p class="text-slate-500 text-xs leading-relaxed">
+                    Ujian ini memiliki durasi pengerjaan selama 20 menit untuk 10 soal evaluasi. Ujian akan otomatis terkumpul jika waktu habis.
+                </p>
+                <button onclick="startQuizMode()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-md transition duration-200 w-full text-sm">
+                    Mulai Ujian Sekarang
+                </button>
+            </div>
+
+            <!-- Active Quiz Box -->
+            <div id="quiz-active-panel" class="hidden bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+                <!-- Progress track bar -->
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <span id="quiz-progress-lbl" class="text-xs font-bold uppercase tracking-wider text-emerald-600">Soal 1 dari 10</span>
+                    <div class="flex gap-1.5" id="quiz-progress-dots">
+                        <!-- Dots indicating answered state dynamically -->
+                    </div>
+                </div>
+
+                <!-- Active Question content -->
+                <div id="quiz-active-question-container" class="space-y-4">
+                    <!-- Dynamic Question HTML Injection -->
+                </div>
+
+                <!-- Next/Prev Buttons -->
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                    <button id="quiz-prev-btn" onclick="prevQuizQuestion()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2.5 rounded-xl transition text-sm disabled:opacity-50">
+                        Kembali
+                    </button>
+                    <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-xl transition text-sm">
+                        Selanjutnya
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Score Summary Screen -->
+            <div id="quiz-score-panel" class="hidden bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm space-y-8 max-w-3xl mx-auto">
+                <div class="text-center space-y-2">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Evaluasi Selesai</span>
+                    <h3 class="text-3xl font-extrabold text-slate-900">Laporan Analisis Keterampilan</h3>
+                </div>
+
+                <!-- Score Board grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-center flex flex-col justify-center">
+                        <span class="text-xs font-bold text-slate-400 uppercase">Skor Nilai Akhir</span>
+                        <span id="quiz-score-num" class="text-5xl font-black text-emerald-600 font-mono my-1">0</span>
+                        <span class="text-[10px] text-slate-400">skor minimal lulus adalah 75</span>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-center flex flex-col justify-center">
+                        <span class="text-xs font-bold text-slate-400 uppercase">Waktu Penyelesaian</span>
+                        <span id="quiz-completion-time" class="text-2xl font-extrabold text-slate-800 font-mono my-2">00:00</span>
+                        <span class="text-[10px] text-slate-400">dari maksimal 20 menit</span>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-center flex flex-col justify-center items-center">
+                        <span class="text-xs font-bold text-slate-400 uppercase mb-2">Rekomendasi</span>
+                        <span id="quiz-score-status" class="text-xs font-bold px-3 py-1.5 rounded-full">-</span>
+                    </div>
+                </div>
+
+                <!-- Diagnostic analysis -->
+                <div class="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-5 space-y-3">
+                    <h4 class="font-bold text-emerald-950 text-sm flex items-center">
+                        <i class="fa-solid fa-chart-pie mr-2 text-emerald-600"></i>
+                        Analisis Diagnostik Topik
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-600">
+                        <div class="bg-white p-3.5 border border-slate-100 rounded-xl space-y-1">
+                            <div class="font-bold text-indigo-900">Aturan Sinus (Soal 1, 2, 7, 10)</div>
+                            <div>Benar: <span id="diag-sin-correct" class="font-bold text-slate-800">0</span> / 4</div>
+                            <div class="text-[10px] text-slate-400" id="diag-sin-msg">Evaluasi ketepatan pemahaman relasi sudut-sisi berhadapan.</div>
+                        </div>
+                        <div class="bg-white p-3.5 border border-slate-100 rounded-xl space-y-1">
+                            <div class="font-bold text-emerald-900">Aturan Cosinus (Soal 3, 4, 5, 6, 8, 9)</div>
+                            <div>Benar: <span id="diag-cos-correct" class="font-bold text-slate-800">0</span> / 6</div>
+                            <div class="text-[10px] text-slate-400" id="diag-cos-msg">Evaluasi ketepatan penggunaan relasi sisi apit (SAS) & sisi penuh (SSS).</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review accordion panel -->
+                <div class="space-y-4">
+                    <h4 class="font-bold text-slate-800 text-base">Ulasan Kunci & Jawaban Langkah-demi-Langkah</h4>
+                    <div id="quiz-review-accordion" class="space-y-3">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12 shrink-0">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
+            &copy; 2026 E-Modul & Evaluasi Kognitif Matematika SMA.
+        </div>
+    </footer>
+
+    <!-- JS Logic Core -->
+    <script>
+        // Global math rendering trigger configuration
+        function triggerMathRender(element) {
+            const target = element || document.body;
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(target, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError : false
+                });
+            }
+        }
+
+        // 10 EXCLUSIVE UNUSED EXAMPLES & PRACTICE PROBLEMS FROM THE PDF
+        const unusedDatabase = [
+            {
+                qId: 1,
+                topic: 'sinus',
+                q: "Sebuah segitiga ABC diketahui panjang sisi $AB=12$ cm, $\\angle B=75^{\\circ}$ dan $\\angle A=60^{\\circ}$ maka panjang sisi $BC=\\cdot\\cdot\\cdot$ cm.",
+                options: [
+                    "A. $4\\sqrt{6}$",
+                    "B. $6\\sqrt{6}$",
+                    "C. $6\\sqrt{2}$",
+                    "D. $8\\sqrt{2}$",
+                    "E. $8\\sqrt{3}$"
+                ],
+                correctIdx: 1, // B
+                hint: "Jumlah sudut segitiga adalah $180^{\\circ}$. Hitung besar $\\angle C$ terlebih dahulu, lalu gunakan Aturan Sinus: $\\frac{BC}{\\sin A} = \\frac{AB}{\\sin C}$.",
+                explain: "<strong>Langkah 1:</strong> Cari sudut C:<br>\\(\\angle C = 180^{\\circ} - (\\angle A + \\angle B) = 180^{\\circ} - (60^{\\circ} + 75^{\\circ}) = 45^{\\circ}\\).<br><br><strong>Langkah 2:</strong> Gunakan Aturan Sinus:<br>\\(\\frac{BC}{\\sin A} = \\frac{AB}{\\sin C} \\implies \\frac{BC}{\\sin 60^{\\circ}} = \\frac{12}{\\sin 45^{\\circ}}\\)<br>\\(BC = 12 \\cdot \\frac{\\sin 60^{\\circ}}{\\sin 45^{\\circ}} = 12 \\cdot \\frac{\\frac{1}{2}\\sqrt{3}}{\\frac{1}{2}\\sqrt{2}} = 12 \\cdot \\sqrt{\\frac{3}{2}} = 12 \\cdot \\frac{\\sqrt{6}}{2} = 6\\sqrt{6}\\text{ cm}\\)."
+            },
+            {
+                qId: 2,
+                topic: 'sinus',
+                q: "Sebuah segitiga PQR diketahui panjang sisi $PQ=4\\sqrt{3}$ cm, $PR=4$ cm dan $\\angle R=60^{\\circ}$ maka besar $\\angle Q=\\cdot\\cdot\\cdot$",
+                options: [
+                    "A. $30^{\\circ}$",
+                    "B. $60^{\\circ}$",
+                    "C. $90^{\\circ}$",
+                    "D. $120^{\\circ}$",
+                    "E. $150^{\\circ}$"
+                ],
+                correctIdx: 0, // A
+                hint: "Gunakan Aturan Sinus yang melibatkan sisi PQ, PR, dan sudut-sudut di depannya: $\\frac{PR}{\\sin Q} = \\frac{PQ}{\\sin R}$.",
+                explain: "<strong>Langkah 1:</strong> Substitusi nilai ke Aturan Sinus:<br>\\(\\frac{PR}{\\sin Q} = \\frac{PQ}{\\sin R} \\implies \\frac{4}{\\sin Q} = \\frac{4\\sqrt{3}}{\\sin 60^{\\circ}}\\).<br><br><strong>Langkah 2:</strong> Hitung nilai sinus Q:<br>\\(\\frac{4}{\\sin Q} = \\frac{4\\sqrt{3}}{\\frac{1}{2}\\sqrt{3}} \\implies \\frac{4}{\\sin Q} = 8 \\implies \\sin Q = \\frac{4}{8} = \\frac{1}{2}\\).<br>Nilai \\(\\sin Q = \\frac{1}{2}\\) untuk sudut lancip adalah \\(30^{\\circ}\\)."
+            },
+            {
+                qId: 3,
+                topic: 'cosinus',
+                q: "Sebuah segitiga ABC diketahui sisi $a=3$ cm, $b=3\\sqrt{3}$ cm dan $\\angle A=30^{\\circ},$ maka panjang sisi $c=\\cdot\\cdot\\cdot$ cm.",
+                options: [
+                    "A. $4\\sqrt{3}$",
+                    "B. $6$",
+                    "C. $3\\sqrt{2}$",
+                    "D. $5$",
+                    "E. $4$"
+                ],
+                correctIdx: 1, // B
+                hint: "Gunakan Aturan Cosinus berpusat di sudut A: $a^2 = b^2 + c^2 - 2bc \\cdot \\cos A$. Hal ini akan membentuk persamaan kuadrat dalam variabel $c$.",
+                explain: "<strong>Langkah 1:</strong> Masukkan ke rumus Aturan Cosinus:<br>\\(a^2 = b^2 + c^2 - 2bc \\cdot \\cos A\\)<br>\\(3^2 = (3\\sqrt{3})^2 + c^2 - 2(3\\sqrt{3})(c) \\cdot \\cos 30^{\\circ}\\)<br>\\(9 = 27 + c^2 - 6\\sqrt{3}c \\cdot \\left(\\frac{1}{2}\\sqrt{3}\\right)\\)<br>\\(9 = 27 + c^2 - 9c\\).<br><br><strong>Langkah 2:</strong> Selesaikan persamaan kuadrat:<br>\\(c^2 - 9c + 18 = 0 \\implies (c - 3)(c - 6) = 0\\).<br>Maka didapat kemungkinan nilai \\(c = 3\\) atau \\(c = 6\\). Sesuai dengan opsi yang tersedia, jawaban yang tepat adalah <strong>6 cm</strong>."
+            },
+            {
+                qId: 4,
+                topic: 'cosinus',
+                q: "Suatu segitiga PQR diketahui sisi $PQ=4$ cm dan $QR=2\\sqrt{3}$ cm serta $PR=2$ cm. Maka besar $\\angle Q=\\cdot\\cdot\\cdot$",
+                options: [
+                    "A. $30^{\\circ}$",
+                    "B. $60^{\\circ}$",
+                    "C. $90^{\\circ}$",
+                    "D. $120^{\\circ}$",
+                    "E. $330^{\\circ}$"
+                ],
+                correctIdx: 0, // A
+                hint: "Identifikasi penamaan sisi terlebih dahulu: $q = PR = 2$, $p = QR = 2\\sqrt{3}$, dan $r = PQ = 4$. Gunakan aturan cosinus $q^2 = p^2 + r^2 - 2pr \\cdot \\cos Q$.",
+                explain: "<strong>Langkah 1:</strong> Gunakan Aturan Cosinus untuk sudut Q:<br>\\(q^2 = p^2 + r^2 - 2pr \\cdot \\cos Q\\)<br>\\(2^2 = (2\\sqrt{3})^2 + 4^2 - 2(2\\sqrt{3})(4) \\cdot \\cos Q\\)<br>\\(4 = 12 + 16 - 16\\sqrt{3} \\cdot \\cos Q\\)<br>\\(4 = 28 - 16\\sqrt{3} \\cdot \\cos Q\\).<br><br><strong>Langkah 2:</strong> Cari nilai cosinus Q:<br>\\(16\\sqrt{3} \\cdot \\cos Q = 24\\)<br>\\(\\cos Q = \\frac{24}{16\\sqrt{3}} = \\frac{3}{2\\sqrt{3}} = \\frac{\\sqrt{3}}{2}\\).<br>Nilai dari \\(\\cos Q = \\frac{1}{2}\\sqrt{3}\\) adalah \\(30^{\\circ}\\)."
+            },
+            {
+                qId: 5,
+                topic: 'cosinus',
+                q: "Suatu segitiga ABC diketahui sisi $AB=2$ cm dan $AC=2\\sqrt{7}$ cm serta $BC=4$ cm. Maka besar $\\angle B=\\cdot\\cdot\\cdot$",
+                options: [
+                    "A. $30^{\\circ}$",
+                    "B. $45^{\\circ}$",
+                    "C. $60^{\\circ}$",
+                    "D. $90^{\\circ}$",
+                    "E. $120^{\\circ}$"
+                ],
+                correctIdx: 4, // E
+                hint: "Panjang sisi didefinisikan sebagai $c = AB = 2$, $b = AC = 2\\sqrt{7}$, $a = BC = 4$. Gunakan rumus aturan cosinus: $b^2 = a^2 + c^2 - 2ac \\cdot \\cos B$.",
+                explain: "<strong>Langkah 1:</strong> Tuliskan rumus Aturan Cosinus:<br>\\(b^2 = a^2 + c^2 - 2ac \\cdot \\cos B\\)<br>\\((2\\sqrt{7})^2 = 4^2 + 2^2 - 2(4)(2) \\cdot \\cos B\\)<br>\\(28 = 16 + 4 - 16 \\cdot \\cos B\\)<br>\\(28 = 20 - 16 \\cdot \\cos B\\).<br><br><strong>Langkah 2:</strong> Cari nilai cosinus B:<br>\\(16 \\cdot \\cos B = 20 - 28 = -8\\)<br>\\(\\cos B = -\\frac{8}{16} = -\\frac{1}{2}\\).<br>Karena cosinus bernilai negatif, sudut B adalah sudut tumpul di kuadran II: \\(\\angle B = 120^{\\circ}\\)."
+            },
+            {
+                qId: 6,
+                topic: 'cosinus',
+                q: "Pada segitiga PQR diketahui panjang sisi $QR=8$ cm, $PQ=5$ cm dan besar $\\angle Q=60^{\\circ}$. Panjang $PR=\\cdot\\cdot\\cdot$ cm.",
+                options: [
+                    "A. $6\\sqrt{3}$",
+                    "B. $6$",
+                    "C. $7$",
+                    "D. $8$",
+                    "E. $8\\sqrt{2}$"
+                ],
+                correctIdx: 2, // C
+                hint: "Unsur yang diketahui adalah Sisi, Sudut, Sisi (SAS). Gunakan Aturan Cosinus: $q^2 = p^2 + r^2 - 2pr \\cdot \\cos Q$.",
+                explain: "<strong>Langkah 1:</strong> Identifikasi variabel:<br>\\(p = QR = 8\\), \\(r = PQ = 5\\), \\(\\angle Q = 60^{\\circ}\\).<br><br><strong>Langkah 2:</strong> Masukkan ke rumus Aturan Cosinus:<br>\\(q^2 = p^2 + r^2 - 2pr \\cdot \\cos Q\\)<br>\\(q^2 = 8^2 + 5^2 - 2(8)(5) \\cdot \\cos 60^{\\circ}\\)<br>\\(q^2 = 64 + 25 - 80 \\cdot \\left(\\frac{1}{2}\right)\\)<br>\\(q^2 = 89 - 40 = 49 \\implies q = \\sqrt{49} = 7\\text{ cm}\\)."
+            },
+            {
+                qId: 7,
+                topic: 'sinus',
+                q: "Sebuah segitiga ABC dimana sudut $\\angle A=60^{\\circ}$, $\\angle C=75^{\\circ}$ dan panjang sisi $b=6$ cm, maka panjang sisi $a=\\cdot\\cdot\\cdot$ cm.",
+                options: [
+                    "A. $3\\sqrt{6}$",
+                    "B. $6\\sqrt{6}$",
+                    "C. $2\\sqrt{2}$",
+                    "D. $6\\sqrt{3}$",
+                    "E. $6\\sqrt{2}$"
+                ],
+                correctIdx: 0, // A
+                hint: "Hitung dulu sudut B menggunakan konsep jumlah sudut dalam segitiga, kemudian gunakan Aturan Sinus: $\\frac{a}{\\sin A} = \\frac{b}{\\sin B}$.",
+                explain: "<strong>Langkah 1:</strong> Hitung sudut B:<br>\\(\\angle B = 180^{\\circ} - (60^{\\circ} + 75^{\\circ}) = 45^{\\circ}\\).<br><br><strong>Langkah 2:</strong> Gunakan Aturan Sinus:<br>\\(\\frac{a}{\\sin A} = \\frac{b}{\\sin B} \\implies \\frac{a}{\\sin 60^{\\circ}} = \\frac{6}{\\sin 45^{\\circ}}\\)<br>\\(a = 6 \\cdot \\frac{\\sin 60^{\\circ}}{\\sin 45^{\\circ}} = 6 \\cdot \\frac{\\frac{1}{2}\\sqrt{3}}{\\frac{1}{2}\\sqrt{2}} = 6 \\cdot \\sqrt{\\frac{3}{2}} = 6 \\cdot \\frac{\\sqrt{6}}{2} = 3\\sqrt{6}\\text{ cm}\\)."
+            },
+            {
+                qId: 8,
+                topic: 'cosinus',
+                q: "Suatu jajaran genjang ABCD dengan panjang $AB=7$ cm, $AD=6$ cm dan $BD=8$ cm. Nilai cosinus sudut ADC adalah...",
+                options: [
+                    "A. $\\frac{1}{3}$",
+                    "B. $-\\frac{1}{2}\\sqrt{2}$",
+                    "C. $\\frac{1}{2}\\sqrt{2}$",
+                    "D. $\\frac{1}{4}$",
+                    "E. $-\\frac{1}{4}$"
+                ],
+                correctIdx: 4, // E
+                hint: "Dalam jajaran genjang, sudut-sudut yang berdekatan berjumlah $180^{\\circ}$ (sudut dalam sepihak), sehingga $\\cos \\angle ADC = -\\cos \\angle DAB$. Cari $\\cos \\angle DAB$ terlebih dahulu lewat segitiga ABD menggunakan aturan cosinus.",
+                explain: "<strong>Langkah 1:</strong> Cari \\(\\cos \\angle DAB\\) pada segitiga ABD:<br>Sisi-sisi: \\(AB = 7\\), \\(AD = 6\\), \\(BD = 8\\).<br>\\(BD^2 = AB^2 + AD^2 - 2(AB)(AD) \\cdot \\cos \\angle DAB\\)<br>\\(8^2 = 7^2 + 6^2 - 2(7)(6) \\cdot \\cos \\angle DAB\\)<br>\\(64 = 49 + 36 - 84 \\cdot \\cos \\angle DAB\\)<br>\\(64 = 85 - 84 \\cdot \\cos \\angle DAB \\implies 84 \\cdot \\cos \\angle DAB = 21\\)<br>\\(\\cos \\angle DAB = \\frac{21}{84} = \\frac{1}{4}\\).<br><br><strong>Langkah 2:</strong> Hubungkan ke sudut ADC:<br>Karena \\(\\angle ADC + \\angle DAB = 180^{\\circ}\\), maka:<br>\\(\\cos \\angle ADC = \\cos(180^{\\circ} - \\angle DAB) = -\\cos \\angle DAB = -\\frac{1}{4}\\)."
+            },
+            {
+                qId: 9,
+                topic: 'cosinus',
+                q: "Diketahui segitiga ABC dengan panjang $AC=3$ cm, $AB=2$ cm dan $\\angle A=60^{\\circ}$. Maka nilai $\\cos C = \\cdot\\cdot\\cdot$",
+                options: [
+                    "A. $\\frac{2}{3}\\sqrt{7}$",
+                    "B. $\\frac{3}{2}\\sqrt{7}$",
+                    "C. $\\frac{2}{7}\\sqrt{7}$",
+                    "D. $\\frac{1}{3}\\sqrt{6}$",
+                    "E. $\\frac{1}{2}\\sqrt{6}$"
+                ],
+                correctIdx: 2, // C
+                hint: "Cari panjang sisi $a$ terlebih dahulu menggunakan aturan cosinus, setelah didapatkan gunakan aturan cosinus sekali lagi untuk mendapatkan nilai $\\cos C$.",
+                explain: "<strong>Langkah 1:</strong> Cari sisi \\(a = BC\\):<br>\\(a^2 = b^2 + c^2 - 2bc \\cdot \\cos A\\)<br>\\(a^2 = 3^2 + 2^2 - 2(3)(2) \\cdot \\cos 60^{\\circ}\\)<br>\\(a^2 = 9 + 4 - 12 \\cdot (0.5) = 13 - 6 = 7 \\implies a = \\sqrt{7}\\text{ cm}\\).<br><br><strong>Langkah 2:</strong> Cari \\(\\cos C\\):<br>\\(c^2 = a^2 + b^2 - 2ab \\cdot \\cos C\\)<br>\\(2^2 = (\\sqrt{7})^2 + 3^2 - 2(\\sqrt{7})(3) \\cdot \\cos C\\)<br>\\(4 = 7 + 9 - 6\\sqrt{7} \\cdot \\cos C\\)<br>\\(4 = 16 - 6\\sqrt{7} \\cdot \\cos C \\implies 6\\sqrt{7} \\cdot \\cos C = 12\\)<br>\\(\\cos C = \\frac{12}{6\\sqrt{7}} = \\frac{2}{\\sqrt{7}} = \\frac{2}{7}\\sqrt{7}\\)."
+            },
+            {
+                qId: 10,
+                topic: 'sinus',
+                q: "Diberikan segitiga ABC dengan $\\angle ACB=105^{\\circ}$ $\\angle ABC=45^{\\circ}$ dan $AB=(\\sqrt{2}+\\sqrt{6})$ cm. Panjang sisi BC sama dengan... cm.",
+                options: [
+                    "A. $\\sqrt{3}$",
+                    "B. $\\sqrt{6}$",
+                    "C. $2$",
+                    "D. $3$",
+                    "E. $2\\sqrt{2}$"
+                ],
+                correctIdx: 2, // C
+                hint: "Cari sudut A terlebih dahulu: $180^{\\circ} - (105^{\\circ} + 45^{\\circ}) = 30^{\\circ}$. Lalu gunakan aturan sinus: $\\frac{BC}{\\sin A} = \\frac{AB}{\\sin C}$. Gunakan nilai prasyarat $\\sin 105^{\\circ} = \\frac{1}{4}(\\sqrt{6}+\\sqrt{2})$.",
+                explain: "<strong>Langkah 1:</strong> Cari sudut A:<br>\\(\\angle A = 180^{\\circ} - (105^{\\circ} + 45^{\\circ}) = 30^{\\circ}\\).<br><br><strong>Langkah 2:</strong> Gunakan Aturan Sinus:<br>\\(\\frac{BC}{\\sin 30^{\\circ}} = \\frac{AB}{\\sin 105^{\\circ}}\\)<br>Kita tahu \\(\\sin 105^{\\circ} = \\sin(60^{\\circ} + 45^{\\circ}) = \\frac{1}{4}(\\sqrt{6} + \\sqrt{2})\\).<br>\\(\\frac{BC}{\\frac{1}{2}} = \\frac{\\sqrt{2} + \\sqrt{6}}{\\frac{1}{4}(\\sqrt{6} + \\sqrt{2})} \\implies 2 \\cdot BC = 4 \\implies BC = 2\\text{ cm}\\)."
+            }
+        ];
+
+        // --- Tab & Mode Selection ---
+        let currentMode = 'practice';
+        let currentPracticeIdx = 0;
+        let quizAnswers = {};
+        let activeQuizQuestionIdx = 0;
+        let quizStartTime = null;
+        let timerInterval = null;
+
+        function selectMode(mode) {
+            currentMode = mode;
+            document.getElementById('workspace-practice').classList.add('hidden');
+            document.getElementById('workspace-quiz').classList.add('hidden');
+            
+            if (mode === 'practice') {
+                document.getElementById('workspace-practice').classList.remove('hidden');
+                initPracticeMode();
+            } else {
+                document.getElementById('workspace-quiz').classList.remove('hidden');
+                initQuizMode();
+            }
+        }
+
+        // --- PRACTICE MODE LOGIC ---
+        function initPracticeMode() {
+            // Populate select dropdown
+            const selector = document.getElementById('practice-select-q');
+            selector.innerHTML = '';
+            unusedDatabase.forEach((q, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.textContent = `Soal Latihan No. ${q.qId}`;
+                selector.appendChild(opt);
+            });
+            selector.value = currentPracticeIdx;
+            loadPracticeQuestion();
+        }
+
+        function loadPracticeQuestion() {
+            const selector = document.getElementById('practice-select-q');
+            currentPracticeIdx = parseInt(selector.value);
+            const qData = unusedDatabase[currentPracticeIdx];
+
+            // Set question texts
+            document.getElementById('practice-q-label').textContent = `Soal Latihan Defantri (Topik: Aturan ${qData.topic.toUpperCase()})`;
+            document.getElementById('practice-q-text').innerHTML = qData.q;
+
+            // Generate options HTML
+            const optDiv = document.getElementById('practice-options');
+            optDiv.innerHTML = '';
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.onclick = () => selectPracticeOption(idx, btn);
+                btn.className = "option-btn text-left p-4 border border-slate-200 rounded-xl bg-white hover:border-emerald-300 hover:bg-emerald-50/20 transition text-sm font-medium";
+                btn.innerHTML = opt;
+                optDiv.appendChild(btn);
+            });
+
+            // Hide hint & explanation boxes
+            document.getElementById('practice-hint-box').classList.add('hidden');
+            document.getElementById('practice-explain-box').classList.add('hidden');
+
+            triggerMathRender(document.getElementById('practice-card'));
+        }
+
+        function selectPracticeOption(selectedIdx, buttonEl) {
+            const qData = unusedDatabase[currentPracticeIdx];
+            const optDiv = document.getElementById('practice-options');
+            const explainBox = document.getElementById('practice-explain-box');
+
+            // Disable all option buttons in the current container
+            optDiv.querySelectorAll('button').forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === qData.correctIdx) {
+                    btn.className = "text-left p-4 border-2 border-emerald-500 rounded-xl bg-emerald-50 text-emerald-800 text-sm font-semibold";
+                    btn.innerHTML += ` <i class="fa-solid fa-circle-check text-emerald-600 ml-2"></i>`;
+                } else if (idx === selectedIdx) {
+                    btn.className = "text-left p-4 border-2 border-rose-500 rounded-xl bg-rose-50 text-rose-800 text-sm font-semibold";
+                    btn.innerHTML += ` <i class="fa-solid fa-circle-xmark text-rose-600 ml-2"></i>`;
+                } else {
+                    btn.className = "text-left p-4 border border-slate-100 rounded-xl bg-slate-100 text-slate-400 text-sm";
+                }
+            });
+
+            // Render explanation
+            explainBox.className = "p-5 rounded-2xl border text-sm leading-relaxed space-y-3 " + 
+                (selectedIdx === qData.correctIdx ? "bg-emerald-50/50 border-emerald-100 text-emerald-950" : "bg-rose-50/50 border-rose-100 text-rose-950");
+            
+            explainBox.innerHTML = `
+                <div class="flex items-center space-x-2 font-bold mb-1">
+                    <span class="text-base">${selectedIdx === qData.correctIdx ? '🎉 Jawabanmu Benar!' : '❌ Jawaban Kurang Tepat'}</span>
+                </div>
+                <div>${qData.explain}</div>
+            `;
+            explainBox.classList.remove('hidden');
+            triggerMathRender(explainBox);
+        }
+
+        function togglePracticeHint() {
+            const hintBox = document.getElementById('practice-hint-box');
+            const qData = unusedDatabase[currentPracticeIdx];
+            if (hintBox.classList.contains('hidden')) {
+                hintBox.innerHTML = `<strong>Petunjuk Kognitif:</strong><br>${qData.hint}`;
+                hintBox.classList.remove('hidden');
+                triggerMathRender(hintBox);
+            } else {
+                hintBox.classList.add('hidden');
+            }
+        }
+
+        function nextPractice() {
+            if (currentPracticeIdx < unusedDatabase.length - 1) {
+                currentPracticeIdx++;
+                document.getElementById('practice-select-q').value = currentPracticeIdx;
+                loadPracticeQuestion();
+            } else {
+                alert("Kamu sudah sampai di soal terakhir! Coba ubah mode menjadi 'Mode Kuis Berwaktu' untuk menguji kecepatan analisismu.");
+            }
+        }
+
+
+        // --- QUIZ MODE LOGIC ---
+        function initQuizMode() {
+            document.getElementById('quiz-setup-panel').classList.remove('hidden');
+            document.getElementById('quiz-active-panel').classList.add('hidden');
+            document.getElementById('quiz-score-panel').classList.add('hidden');
+            clearInterval(timerInterval);
+        }
+
+        function startQuizMode() {
+            document.getElementById('quiz-setup-panel').classList.add('hidden');
+            document.getElementById('quiz-active-panel').classList.remove('hidden');
+            
+            quizAnswers = {};
+            activeQuizQuestionIdx = 0;
+            quizStartTime = new Date();
+            
+            // Build progress state dots
+            const dotsContainer = document.getElementById('quiz-progress-dots');
+            dotsContainer.innerHTML = '';
+            unusedDatabase.forEach((_, idx) => {
+                const dot = document.createElement('span');
+                dot.id = `quiz-dot-${idx}`;
+                dot.className = "w-2.5 h-2.5 rounded-full bg-slate-200 transition-all";
+                dotsContainer.appendChild(dot);
+            });
+
+            // Start timer
+            let timeLeft = 1200; // 20 minutes in seconds
+            updateTimerDisplay(timeLeft);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+
+            loadQuizQuestion();
+        }
+
+        function updateTimerDisplay(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainderSecs = seconds % 60;
+            document.getElementById('quiz-timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${remainderSecs.toString().padStart(2, '0')}`;
+        }
+
+        function loadQuizQuestion() {
+            const qData = unusedDatabase[activeQuizQuestionIdx];
+            document.getElementById('quiz-progress-lbl').textContent = `Soal ${activeQuizQuestionIdx + 1} dari ${unusedDatabase.length}`;
+            
+            // Update dots
+            unusedDatabase.forEach((_, idx) => {
+                const dot = document.getElementById(`quiz-dot-${idx}`);
+                if (idx === activeQuizQuestionIdx) {
+                    dot.className = "w-3 h-3 rounded-full bg-emerald-600 ring-4 ring-emerald-100";
+                } else if (quizAnswers[idx] !== undefined) {
+                    dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400";
+                } else {
+                    dot.className = "w-2.5 h-2.5 rounded-full bg-slate-200";
+                }
+            });
+
+            // Populate question HTML
+            let optionsHTML = '';
+            qData.options.forEach((opt, idx) => {
+                const isSelected = quizAnswers[activeQuizQuestionIdx] === idx;
+                const activeClass = isSelected ? 'border-emerald-600 bg-emerald-50/40 ring-2 ring-emerald-500/20' : 'border-slate-200 bg-white hover:border-slate-300';
+                optionsHTML += `
+                    <button onclick="selectQuizAnswer(${idx})" class="w-full text-left p-4 border rounded-xl transition text-sm flex items-center justify-between ${activeClass}">
+                        <span class="font-semibold text-slate-800">${opt}</span>
+                        ${isSelected ? '<i class="fa-solid fa-circle-check text-emerald-600"></i>' : '<span class="w-5 h-5 border border-slate-300 rounded-full"></span>'}
+                    </button>
+                `;
+            });
+
+            const container = document.getElementById('quiz-active-question-container');
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <p class="text-slate-900 font-bold text-base md:text-lg leading-relaxed">${qData.q}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                        ${optionsHTML}
+                    </div>
+                </div>
+            `;
+
+            // Adjust navigation buttons
+            document.getElementById('quiz-prev-btn').disabled = activeQuizQuestionIdx === 0;
+            if (activeQuizQuestionIdx === unusedDatabase.length - 1) {
+                document.getElementById('quiz-next-btn').innerHTML = `Selesai & Kumpulkan <i class="fa-solid fa-paper-plane ml-1"></i>`;
+            } else {
+                document.getElementById('quiz-next-btn').innerHTML = `Selanjutnya <i class="fa-solid fa-chevron-right ml-1"></i>`;
+            }
+
+            triggerMathRender(container);
+        }
+
+        function selectQuizAnswer(optIdx) {
+            quizAnswers[activeQuizQuestionIdx] = optIdx;
+            loadQuizQuestion();
+        }
+
+        function prevQuizQuestion() {
+            if (activeQuizQuestionIdx > 0) {
+                activeQuizQuestionIdx--;
+                loadQuizQuestion();
+            }
+        }
+
+        function nextQuizQuestion() {
+            if (quizAnswers[activeQuizQuestionIdx] === undefined) {
+                alert('Harap pilih salah satu opsi jawaban sebelum melangkah ke pertanyaan berikutnya!');
+                return;
+            }
+
+            if (activeQuizQuestionIdx < unusedDatabase.length - 1) {
+                activeQuizQuestionIdx++;
+                loadQuizQuestion();
+            } else {
+                submitQuiz();
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-active-panel').classList.add('hidden');
+            document.getElementById('quiz-score-panel').classList.remove('hidden');
+
+            const quizEndTime = new Date();
+            const diffMs = quizEndTime - quizStartTime;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffSecs = Math.floor((diffMs % 60000) / 1000);
+            document.getElementById('quiz-completion-time').textContent = 
+                `${diffMins.toString().padStart(2, '0')}:${diffSecs.toString().padStart(2, '0')}`;
+
+            let score = 0;
+            let countSinCorrect = 0;
+            let countCosCorrect = 0;
+            let reviewHTML = '';
+
+            unusedDatabase.forEach((qData, qIdx) => {
+                const userAns = quizAnswers[qIdx];
+                const isCorrect = userAns === qData.correctIdx;
+                if (isCorrect) {
+                    score += 10;
+                    if (qData.topic === 'sinus') countSinCorrect++;
+                    else countCosCorrect++;
+                }
+
+                reviewHTML += `
+                    <div class="border rounded-xl overflow-hidden ${isCorrect ? 'border-emerald-200' : 'border-rose-200'}">
+                        <button onclick="toggleAccordion('quiz-rev-${qIdx}')" class="w-full text-left p-4 font-bold text-slate-800 flex justify-between items-center ${isCorrect ? 'bg-emerald-50/40 hover:bg-emerald-50' : 'bg-rose-50/40 hover:bg-rose-50'} transition text-sm">
+                            <span class="flex items-center space-x-2">
+                                <span class="text-xs px-2 py-1 rounded font-black ${isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                                    Soal ${qIdx + 1}
+                                </span>
+                                <span>${isCorrect ? 'BENAR' : 'SALAH'} (Aturan ${qData.topic.toUpperCase()})</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" id="quiz-rev-${qIdx}-icon"></i>
+                        </button>
+                        <div id="quiz-rev-${qIdx}-content" class="hidden p-5 text-sm text-slate-600 space-y-4 bg-white border-t border-slate-100">
+                            <p class="font-bold text-slate-900 leading-relaxed">${qData.q}</p>
+                            <div class="text-xs text-slate-500 space-y-1 bg-slate-50 p-3 rounded-lg border">
+                                <div>Jawabanmu: <strong class="${isCorrect ? 'text-emerald-700' : 'text-rose-700'}">${qData.options[userAns] || 'Tidak dijawab'}</strong></div>
+                                ${!isCorrect ? `<div>Kunci Jawaban: <strong class="text-emerald-700">${qData.options[qData.correctIdx]}</strong></div>` : ''}
+                            </div>
+                            <div class="p-4 bg-indigo-50/30 border border-indigo-100 rounded-xl text-xs text-indigo-950 leading-relaxed">
+                                <strong>Langkah Penyelesaian Pembahasan:</strong><br>${qData.explain}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Update scoreboard
+            document.getElementById('quiz-score-num').textContent = score;
+            const statusEl = document.getElementById('quiz-score-status');
+            if (score >= 80) {
+                statusEl.className = "text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-800";
+                statusEl.innerHTML = `<i class="fa-solid fa-medal"></i> Kompeten (Sangat Baik)`;
+            } else if (score >= 70) {
+                statusEl.className = "text-xs font-bold px-3 py-1.5 rounded-full bg-amber-100 text-amber-800";
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Cukup (Lulus Minimal)`;
+            } else {
+                statusEl.className = "text-xs font-bold px-3 py-1.5 rounded-full bg-red-100 text-red-800";
+                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Remedial (Perlu Latihan)`;
+            }
+
+            // Update diagnostics
+            document.getElementById('diag-sin-correct').textContent = countSinCorrect;
+            document.getElementById('diag-cos-correct').textContent = countCosCorrect;
+
+            const msgSin = document.getElementById('diag-sin-msg');
+            if (countSinCorrect === 4) msgSin.innerHTML = "<span class='text-emerald-700 font-bold'>Luar biasa!</span> Kamu sangat memahami aturan perbandingan sinus.";
+            else msgSin.innerHTML = "Reviu kembali konsep garis tinggi pembentuk aturan sinus.";
+
+            const msgCos = document.getElementById('diag-cos-msg');
+            if (countCosCorrect === 6) msgCos.innerHTML = "<span class='text-emerald-700 font-bold'>Sempurna!</span> Kamu menguasai seluruh kasus Aturan Cosinus.";
+            else msgCos.innerHTML = "Latihlah pemahaman manipulasi aljabar persamaan kuadrat aturan cosinus.";
+
+            // Inject review accordion
+            const reviewContainer = document.getElementById('quiz-review-accordion');
+            reviewContainer.innerHTML = reviewHTML;
+
+            triggerMathRender(document.getElementById('quiz-score-panel'));
+        }
+
+        // Accordion helper for quiz review
+        function toggleAccordion(id) {
+            const content = document.getElementById(id + '-content');
+            const icon = document.getElementById(id + '-icon');
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Window Initializer
+        window.onload = function() {
+            selectMode('practice');
+            triggerMathRender();
+        };
+    </script>
+</body>
+</html>
