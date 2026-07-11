@@ -1,0 +1,1 @@
+# Aturan-Sinus-Cosinus-Pada-Segitiga
